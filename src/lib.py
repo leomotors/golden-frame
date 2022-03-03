@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import Dict, List, Tuple, Union
 import cv2
 import numpy as np
 import json
@@ -32,7 +32,7 @@ def resizeImage(
     size: List[int],
     posOption=PosOptions.CENTER
 ) -> np.ndarray:
-    px, py = pic.shape[0:2]
+    py, px = pic.shape[0:2]
 
     ratio = max(size[0]/px, size[1]/py)
 
@@ -67,14 +67,53 @@ def buildGoldenFrame(
     return frame
 
 
-def loadConfig(name: str) -> str:
+def loadConfig(name: str) -> Dict:
     with open(".".join(name.split(".")[:-1]) + ".json") as f:
-        return json.load(f)["pos"]
+        return json.load(f)
 
 
 def buildFromPreset(frame: str, image: str, out: str, opt=PosOptions.CENTER):
-    cfg = loadConfig(frame)
-    outim = buildGoldenFrame(cv2.imread(frame), cv2.imread(image),
+    # Temporary Solution
+    frame = f"./assets/{frame}"
+    out = f"./{out}"
+
+    try:
+        frameimg = cv2.imread(frame)
+        if not frameimg.data:
+            raise
+    except:
+        print(
+            f"ERROR: Cannot Read {frame}! Did you execute this script from correct location and frame name is correct?"
+        )
+        return
+
+    try:
+        inputimg = cv2.imread(image)
+        if not inputimg.data:
+            raise
+    except:
+        print(f"ERROR: Cannot Read Input Image {image}!")
+        return
+
+    cfg = loadConfig(frame)["pos"]
+    outim = buildGoldenFrame(frameimg, inputimg,
                              list(int(k) for k in cfg.split(",")), opt)
 
-    cv2.imwrite(out, outim)
+    try:
+        cv2.imwrite(out, outim)
+    except:
+        print(f"Error writing Image!")
+
+
+def listFrames() -> str:
+    import os
+    items = list(filter(lambda x: not x.endswith(
+        ".json"), os.listdir("./assets")))
+
+    text = f"There are {len(items)} frames available.\n"
+
+    for item in items:
+        cfg = loadConfig(f"./assets/{item}")
+        text += f"\n{item} : {cfg['name']}"
+
+    return text
