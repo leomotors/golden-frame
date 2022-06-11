@@ -1,7 +1,14 @@
 from typing import Dict, List, Tuple, Union
 import cv2
-import numpy as np
 import json
+import numpy as np
+import os
+import pkg_resources
+
+ASSET_PATH = pkg_resources.resource_filename("golden_frame", "assets")
+
+if os.environ.get("DEBUG") is not None:
+    ASSET_PATH = "./golden_frame/assets"
 
 
 class CropOptions:
@@ -73,9 +80,7 @@ def loadConfig(name: str) -> Dict:
 
 
 def buildFromPreset(frame: str, image: str, out: str, opt=PosOptions.CENTER):
-    # Temporary Solution
-    frame = f"./assets/{frame}"
-    out = f"./{out}"
+    frame = f"{ASSET_PATH}/{frame}"
 
     try:
         frameimg = cv2.imread(frame)
@@ -108,12 +113,12 @@ def buildFromPreset(frame: str, image: str, out: str, opt=PosOptions.CENTER):
 def listFrames() -> str:
     import os
     items = list(filter(lambda x: not x.endswith(
-        ".json"), os.listdir("./assets")))
+        ".json"), os.listdir(ASSET_PATH)))
 
     text = f"There are {len(items)} frames available.\n"
 
     for item in items:
-        cfg = loadConfig(f"./assets/{item}")
+        cfg = loadConfig(f"{ASSET_PATH}/{item}")
         text += f"\n{item} : {cfg['name']}"
 
     return text

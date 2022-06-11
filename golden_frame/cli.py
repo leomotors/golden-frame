@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 
 import typer
+import os
 
-from lib import PosOptions, buildFromPreset, listFrames
+if os.environ.get("DEBUG") is None:
+    from golden_frame.lib import PosOptions, buildFromPreset, listFrames
+else:
+    print("[DEBUG] Only use this mode for local development")
+    from lib import PosOptions, buildFromPreset, listFrames
 
 app = typer.Typer()
 
