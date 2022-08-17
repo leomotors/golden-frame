@@ -1,8 +1,12 @@
+# pylint: disable=no-member,misplaced-bare-raise
+
 from typing import Dict, List, Tuple, Union
-import cv2
 import json
-import numpy as np
 import os
+from enum import Enum
+
+import cv2
+import numpy as np
 import pkg_resources
 
 ASSET_PATH = pkg_resources.resource_filename("golden_frame", "assets")
@@ -11,7 +15,7 @@ if os.environ.get("DEBUG") is not None:
     ASSET_PATH = "./golden_frame/assets"
 
 
-class CropOptions:
+class CropOptions(Enum):
     CROP = 0
     PRESERVE = 1
 
@@ -23,15 +27,14 @@ class PosOptions:
 
 
 def getPos(x: Union[int, float], dx: Union[int, float], opt) -> Tuple[int, int]:
-    opt = int(opt)
-    if(opt == PosOptions.START):
+    if opt == PosOptions.START:
         return 0, round(x)
-    elif opt == PosOptions.CENTER:
+    if opt == PosOptions.CENTER:
         return round(dx), round(x+dx)
-    elif opt == PosOptions.END:
+    if opt == PosOptions.END:
         return round(2*dx), round(2*dx+x)
-    else:
-        raise Exception("opt is not valid PosOptions")
+
+    raise Exception("opt is not valid PosOptions")
 
 
 def resizeImage(
@@ -57,15 +60,32 @@ def resizeImage(
     return resized[sy:ey, sx:ex]
 
 
+def scaleImage(img: np.ndarray, res: int) -> Tuple[np.ndarray, float, float]:
+    ly, lx = img.shape[0:2]
+
+    ratio = res / min(ly, lx, res)
+
+    resized = cv2.resize(img, dsize=(round(lx*ratio), round(ly*ratio)))
+
+    return (resized, ratio, ratio)
+
+
 def buildGoldenFrame(
     frame: np.ndarray,
     picture: np.ndarray,
     pos: List[int],
-    posOption=PosOptions.CENTER
+    posOption=PosOptions.CENTER,
+    res=720
 ) -> np.ndarray:
+    # Scale frame to minimum size
+    frame, ratiox, ratioy = scaleImage(frame, res)
+
     resized = resizeImage(
-        picture, [pos[2]-pos[0], pos[3]-pos[1]], posOption)
-    xstart, ystart = pos[0:2]
+        picture,
+        [round((pos[2] - pos[0]) * ratiox),
+         round((pos[3] - pos[1]) * ratioy)],
+        posOption)
+    xstart, ystart = (round(pos[0] * ratiox), round(pos[1] * ratioy))
     ysize, xsize = resized.shape[0:2]
 
     # Why can't you use same axis system?
@@ -79,7 +99,8 @@ def loadConfig(name: str) -> Dict:
         return json.load(f)
 
 
-def buildFromPreset(frame: str, image: str, out: str, opt=PosOptions.CENTER):
+def buildFromPreset(
+        frame: str, image: str, out: str, opt=PosOptions.CENTER, res=720):
     frame = f"{ASSET_PATH}/{frame}"
 
     try:
@@ -102,7 +123,7 @@ def buildFromPreset(frame: str, image: str, out: str, opt=PosOptions.CENTER):
 
     cfg = loadConfig(frame)["pos"]
     outim = buildGoldenFrame(frameimg, inputimg,
-                             list(int(k) for k in cfg.split(",")), opt)
+                             list(int(k) for k in cfg.split(",")), opt, res)
 
     try:
         cv2.imwrite(out, outim)
@@ -122,3 +143,9 @@ def listFrames() -> str:
         text += f"\n{item} : {cfg['name']}"
 
     return text
+
+
+# if __name__ == "__main__":
+#     buildFromPreset(
+#         "big_frame.jpg", "example/zhongxina_before.jpg", "output.png",
+#         PosOptions.CENTER, 720)

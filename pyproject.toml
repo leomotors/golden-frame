@@ -1,7 +1,19 @@
-[build-system]
-requires = [
-    "setuptools>=54",
-    "wheel"
-]
+[tool.poetry]
+name = "golden-frame"
+version = "1.1.60"
+description = "Golden Frame \"กรอบทอง\" Generator, Create Golden Frame for given images (Also supports other frame)"
+authors = ["Nutthapat Pongtanyavichai <59821765+Leomotors@users.noreply.github.com>"]
+license = "MIT"
 
-build-backend = "setuptools.build_meta"
+[tool.poetry.dependencies]
+python = "^3.6"
+opencv-python = "^4.6.0"
+numpy = "^1.23.2"
+typer = "^0.6.1"
+
+[tool.poetry.dev-dependencies]
+autopep8 = "^1.7.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

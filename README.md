@@ -46,3 +46,7 @@ file_name.json Schema
 ```
 
 pos => x1,y1,x2,y2 ; Position to put pictures on, you can get these info using Paint
+
+## [NEW] { flex: true }
+
+Adding this properties allow images to be stretch into the same aspect ratio as the input image
