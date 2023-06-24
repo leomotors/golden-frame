@@ -8,15 +8,15 @@
 ## Example
 
 <img src="https://github.com/Leomotors/golden-frame/raw/main/golden_frame/assets/golden_frame.png" width=200 /> **+**
-<img src="https://github.com/Leomotors/golden-frame/raw/main/example/zhongxina_before.jpg" width = 200 /> **=**
-<img src="https://github.com/Leomotors/golden-frame/raw/main/example/zhongxina_after.png" width=200 />
+<img src="https://github.com/Leomotors/golden-frame/raw/main/example/MasterIceZ.png" width = 200 /> **=**
+<img src="https://github.com/Leomotors/golden-frame/raw/main/example/New-MasterIceZ.png" width=200 />
 
 PS. The original picture of golden frame is K-Pop Star (Search: กรอบทอง ทรงพระเจริญ in Google, there are many variant)
 
 ### Command for Above Example
 
 ```bash
-golden-frame build golden_frame.png example/zhongxina_before.jpg --output=example/zhongxina_after.png
+golden-frame build golden_frame.png example/MasterIceZ.jpg --output=example/New-MasterIceZ.png
 ```
 
 ### Other commands
