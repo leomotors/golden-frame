@@ -110,7 +110,8 @@ def build_frame():
 
 
 def getIP():
-    return request.headers["cf-connecting-ip"] or request.headers["x-real-ip"] or request.remote_addr
+    return request.headers.get("cf-connecting-ip") or request.headers.get(
+        "x-real-ip") or request.remote_addr
 
 
 @app.after_request
