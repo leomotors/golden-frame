@@ -4,13 +4,13 @@ version = "0.0.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
-packages = [{include = "golden_frame_server"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
 flask = "^2.3.2"
 golden-frame = "^1.0.51"
 python-dotenv = "^1.0.0"
+waitress = "^2.1.2"
 
 
 [build-system]

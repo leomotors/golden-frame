@@ -5,8 +5,10 @@ import os
 import cv2
 import numpy as np
 from golden_frame.lib import buildGoldenFrame, listFrames, ASSET_PATH, loadConfig, PosOptions
+from datetime import datetime
 
 from flask import Flask, request, Response
+from waitress import serve
 
 from dotenv import load_dotenv
 
@@ -107,4 +109,21 @@ def build_frame():
     return Response(response_stream.getvalue(), headers=headers)
 
 
-app.run(host="0.0.0.0", port=3131, debug=True)
+def getIP():
+    return request.headers["cf-connecting-ip"] or request.headers["x-real-ip"] or request.remote_addr
+
+
+@app.after_request
+def log_response(response):
+    now = datetime.now()
+    print(f"[{now.strftime('%d/%m/%Y %H:%M:%S')}] {getIP()} -> {request.method} {request.path} {response.status_code}")
+    return response
+
+
+PORT = 3131
+
+if os.getenv("DEV"):
+    app.run(host="0.0.0.0", port=PORT, debug=True)
+else:
+    print(f"Starting server on port {PORT}")
+    serve(app, host="0.0.0.0", port=PORT)
