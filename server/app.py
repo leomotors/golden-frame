@@ -1,13 +1,23 @@
 # pylint: disable=no-member
 
 import io
+import os
 import cv2
 import numpy as np
 from golden_frame.lib import buildGoldenFrame, listFrames, ASSET_PATH, loadConfig, PosOptions
 
 from flask import Flask, request, Response
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 app = Flask(__name__)
+
+PASSWORD = os.getenv("PASSWORD")
+
+if PASSWORD is None or len(PASSWORD) < 1:
+    print("WARN: Password is not set")
 
 
 def line_to_json(line: str):
@@ -45,6 +55,11 @@ def get_frames():
 
 @app.route("/", methods=["POST"])
 def build_frame():
+    if PASSWORD:
+        password = request.headers.get("Authorization")
+        if password != PASSWORD:
+            return "Unauthorized", 401
+
     if 'file' not in request.files:
         return 'No file uploaded', 400
 

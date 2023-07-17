@@ -10,6 +10,7 @@ packages = [{include = "golden_frame_server"}]
 python = "^3.11"
 flask = "^2.3.2"
 golden-frame = "^1.0.51"
+python-dotenv = "^1.0.0"
 
 
 [build-system]
