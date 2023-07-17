@@ -28,7 +28,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: server
-          file: Dockerfile
           push: true
           tags: ghcr.io/leomotors/golden-frame-server
           cache-from: type=gha
