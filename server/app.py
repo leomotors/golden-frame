@@ -4,7 +4,7 @@ import io
 import os
 import cv2
 import numpy as np
-from golden_frame.lib import buildGoldenFrame, listFrames, ASSET_PATH, loadConfig, PosOptions
+from golden_frame.lib import build_frame, list_frames, ASSET_PATH, load_config
 from datetime import datetime
 
 from flask import Flask, request, Response
@@ -31,19 +31,20 @@ def line_to_json(line: str):
     }
 
 
-def build_golden_frame(frame_name: str, input_img: np.ndarray):
-    frame_path = f"{ASSET_PATH}/{frame_name}"
-    frameimg = cv2.imread(frame_path)
-    cfg = loadConfig(frame_path)["pos"]
-
-    out_image = buildGoldenFrame(frame=frameimg, picture=input_img, pos=list(
-        int(k) for k in cfg.split(",")), posOption=PosOptions.CENTER)
-
+def build_golden_frame(frame_name: str, input_image: np.ndarray):
+    frame_path = os.path.join(ASSET_PATH, frame_name)
+    frame_image = cv2.imread(frame_path)
+    
+    out_image = build_frame(
+        source_image = input_image,
+        frame_image = frame_image,
+        frame_marks = load_config(frame_name)["pos"]
+    )
     return out_image
 
 
-def listFramesJson():
-    frames = listFrames()
+def list_frame_json():
+    frames = list_frames()
     items = list(map(line_to_json, filter(
         lambda x: len(x), frames.split("\n")[1:])))
 
@@ -52,7 +53,7 @@ def listFramesJson():
 
 @app.route("/", methods=["GET"])
 def get_frames():
-    return listFramesJson(), 200
+    return list_frame_json(), 200
 
 
 @app.route("/", methods=["POST"])
@@ -75,7 +76,7 @@ def build_frame():
     if frame_name is None:
         return 'No frame name selected', 400
 
-    if not any(map(lambda x: x['name'] == frame_name, listFramesJson())):
+    if not any(map(lambda x: x['name'] == frame_name, list_frame_json())):
         return 'Invalid frame name', 400
 
     # Read the image file as bytes
