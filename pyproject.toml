@@ -4,16 +4,18 @@ version = "1.1.60"
 description = "Golden Frame \"กรอบทอง\" Generator, Create Golden Frame for given images (Also supports other frame)"
 authors = ["Nutthapat Pongtanyavichai <59821765+Leomotors@users.noreply.github.com>"]
 license = "MIT"
+readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.6"
-opencv-python = "^4.6.0"
-numpy = "^1.23.2"
-typer = "^0.6.1"
+python = "^3.11"
+opencv-python = "^4.8.1.78"
+numpy = "^1.26.2"
+typer = "^0.9.0"
 
-[tool.poetry.dev-dependencies]
-autopep8 = "^1.7.0"
+
+[tool.poetry.group.dev.dependencies]
+autopep8 = "^2.0.4"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
-
-import os
 import typer
-from golden_frame.lib import build_from_preset, listFrames
+from golden_frame.lib import build_from_preset, list_frames
 
 app = typer.Typer()
+
 
 @app.command()
 def build(
@@ -29,7 +28,7 @@ def build(
 @app.command()
 def list():
     """Print List of Available Frames"""
-    print(listFrames())
+    print(list_frames())
 
 
 def main():
