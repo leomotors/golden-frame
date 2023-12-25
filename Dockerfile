@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy project metadata files and source files
-COPY pyproject.toml poetry.lock app.py ./
+COPY pyproject.toml poetry.lock golden_frame ./
 
 # Install Poetry and project dependencies
 RUN pip install poetry

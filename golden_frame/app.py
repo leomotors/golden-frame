@@ -4,15 +4,11 @@ import io
 import os
 import cv2
 import numpy as np
-from golden_frame.lib import build_frame, list_frames, ASSET_PATH, load_config
+from lib import build_frame, list_frames, ASSET_PATH, load_config
 from datetime import datetime
 
 from flask import Flask, request, Response
 from waitress import serve
-
-from dotenv import load_dotenv
-
-load_dotenv()
 
 app = Flask(__name__)
 
@@ -34,11 +30,11 @@ def line_to_json(line: str):
 def build_golden_frame(frame_name: str, input_image: np.ndarray):
     frame_path = os.path.join(ASSET_PATH, frame_name)
     frame_image = cv2.imread(frame_path)
-    
+
     out_image = build_frame(
-        source_image = input_image,
-        frame_image = frame_image,
-        frame_marks = load_config(frame_name)["pos"]
+        source_image=input_image,
+        frame_image=frame_image,
+        frame_marks=load_config(frame_name)["pos"]
     )
     return out_image
 
