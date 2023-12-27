@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Dict, List
 import json
 import os
@@ -12,12 +13,42 @@ if os.environ.get("DEBUG") is not None:
     ASSET_PATH = "./golden_frame/assets"
 
 
+class CropOptions(Enum):
+    CROP = 0
+    PRESERVE = 1
+
+
+def crop_to_ratio(source_image: np.ndarray, ratio: float) -> np.ndarray:
+    # From Copilot
+
+    height, width = source_image.shape[:2]
+    target_ratio = width / height
+
+    if target_ratio > ratio:
+        new_width = int(height * ratio)
+        start_x = (width - new_width) // 2
+        end_x = start_x + new_width
+        cropped_image = source_image[:, start_x:end_x]
+    else:
+        new_height = int(width / ratio)
+        start_y = (height - new_height) // 2
+        end_y = start_y + new_height
+        cropped_image = source_image[start_y:end_y, :]
+
+    return cropped_image
+
+
 def build_frame(
     source_image: np.ndarray,
     frame_image: np.ndarray,
     frame_marks: List[List[int]],
-    res=720
+    res=720,
+    crop_option=CropOptions.CROP
 ) -> np.ndarray:
+
+    if crop_option == CropOptions.CROP:
+        ratio = calc_aspect_ratio(frame_marks)
+        source_image = crop_to_ratio(source_image, ratio)
 
     # Scale Frame to match size requirements
     #   - Scale to match height
@@ -101,9 +132,17 @@ def list_frames() -> str:
 
     for item in items:
         cfg = load_config(f"{ASSET_PATH}/{item}")
-        text += f"\n{item} : {cfg['name']}"
+        text += f"\n{item} : {cfg['name']} ({calc_aspect_ratio(cfg['pos']):.3f}:1)"
 
     return text
+
+
+def calc_aspect_ratio(pos: List[List[int]]) -> float:
+    # From Copilot
+
+    return np.linalg.norm(
+        np.array(pos[0]) - np.array(pos[1])) / np.linalg.norm(
+            np.array(pos[0]) - np.array(pos[3]))  # type: ignore
 
 
 def load_config(name: str) -> Dict:

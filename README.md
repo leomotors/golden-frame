@@ -41,12 +41,18 @@ file_name.json Schema
 ```json
 {
   "name": "Golden Frame ทพจร",
-  "pos": "122,122,620,844"
+  "pos": [
+    [122, 122],
+    [620, 122],
+    [620, 844],
+    [112, 844]
+  ]
 }
 ```
 
-pos => x1,y1,x2,y2 ; Position to put pictures on, you can get these info using Paint
+Position is from Top-Left rotate clockwise.  
+Reminder that x goes from left to right and y from top to bottom
 
-## [NEW] { flex: true }
+## TODO: { flex: true }
 
 Adding this properties allow images to be stretch into the same aspect ratio as the input image
