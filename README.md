@@ -36,7 +36,7 @@ pkg_resources.resource_filename("golden_frame", "assets")
 
 Note that this is temporary can be overwrite when installing new version.
 
-file_name.json Schema
+`file_name.json` Schema
 
 ```json
 {
@@ -53,6 +53,6 @@ file_name.json Schema
 Position is from Top-Left rotate clockwise.  
 Reminder that x goes from left to right and y from top to bottom
 
-## TODO: { flex: true }
+## Coming Soon { flex: true }
 
 Adding this properties allow images to be stretch into the same aspect ratio as the input image

@@ -2,7 +2,7 @@
 
 All notables change for Cocoa Discord Utils will be noted here
 
-## [1.1.60] - 2023-12-??
+## [1.1.69] - 2023-12-??
 
 - feat: perspective transformation by @WasinUddy
 - refactor: removed PosOption, image if cropped will always center

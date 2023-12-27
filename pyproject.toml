@@ -1,17 +1,20 @@
 [tool.poetry]
 name = "golden-frame"
-version = "1.1.60"
-description = "Golden Frame \"กรอบทอง\" Generator, Create Golden Frame for given images (Also supports other frame)"
-authors = ["Nutthapat Pongtanyavichai <59821765+Leomotors@users.noreply.github.com>"]
+version = "1.1.69"
+description = "Golden Frame \"กรอบทอง\" Generator, Create Golden Frame for given images (Also supports other frame, included with selected quality frames)"
+authors = [
+  "Nutthapat Pongtanyavichai <59821765+Leomotors@users.noreply.github.com>",
+]
 license = "MIT"
 readme = "README.md"
+repository = "https://github.com/leomotors/golden-frame"
+keywords = ["meme", "meme-generator"]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.9"
 opencv-python = "^4.8.1.78"
 numpy = "^1.26.2"
 typer = "^0.9.0"
-
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "^2.0.4"
@@ -21,3 +24,6 @@ flask = "^3.0.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+golden-frame = "golden_frame.cli:main"
