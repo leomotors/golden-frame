@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import Dict, List
 import json
 import os
@@ -11,11 +10,6 @@ ASSET_PATH = os.path.join("golden_frame", "assets")
 
 if os.environ.get("DEBUG") is not None:
     ASSET_PATH = "./golden_frame/assets"
-
-
-class CropOptions(Enum):
-    CROP = 0
-    PRESERVE = 1
 
 
 def crop_to_ratio(source_image: np.ndarray, ratio: float) -> np.ndarray:
@@ -43,10 +37,10 @@ def build_frame(
     frame_image: np.ndarray,
     frame_marks: List[List[int]],
     res=720,
-    crop_option=CropOptions.CROP
+    crop=True,
 ) -> np.ndarray:
 
-    if crop_option == CropOptions.CROP:
+    if crop:
         ratio = calc_aspect_ratio(frame_marks)
         source_image = crop_to_ratio(source_image, ratio)
 
@@ -94,7 +88,7 @@ def build_frame(
 
 
 def build_from_preset(
-        frame: str, image: str, out: str, res=720):
+        frame: str, image: str, out: str, res=720, crop=True):
     frame = f"{ASSET_PATH}/{frame}"
 
     try:
@@ -116,7 +110,7 @@ def build_from_preset(
         return
 
     cfg = load_config(frame)["pos"]
-    outim = build_frame(input_image, frame_image, cfg, res)
+    outim = build_frame(input_image, frame_image, cfg, res, crop)
     try:
         cv2.imwrite(out, outim)
     except:
