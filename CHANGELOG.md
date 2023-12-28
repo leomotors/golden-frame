@@ -8,6 +8,7 @@ All notables change for Cocoa Discord Utils will be noted here
 - refactor: removed PosOption, image if cropped will always center
 - feat!: wessuwan.png is remade
 - feat: NEW FRAME! orz.jpg
+- feat!: updated pos options
 
 ## [1.0.51] - 2022-06-20
 

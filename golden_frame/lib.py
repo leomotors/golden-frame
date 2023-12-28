@@ -42,7 +42,7 @@ def build_frame(
     source_image: np.ndarray,
     frame_image: np.ndarray,
     frame_marks: List[List[int]],
-    res=720,
+    target_resolution=720,
     crop=True,
 ) -> np.ndarray:
 
@@ -54,8 +54,8 @@ def build_frame(
     #   - Scale to match height
     #   - Calculate change of x point and y point to shift position mark on frame
     og_height, og_width = frame_image.shape[0:2]
-    target_frame_dim = (og_width * res // og_height,
-                        res) if og_width > og_height else (res, og_height * res // og_width)
+    target_frame_dim = (og_width * target_resolution // og_height,
+                        target_resolution) if og_width > og_height else (target_resolution, og_height * target_resolution // og_width)
     frame_image = cv2.resize(
         frame_image, target_frame_dim)
 
@@ -96,7 +96,7 @@ def build_frame(
 
 
 def build_from_preset(
-        frame: str, image: str, out: str, res=720, crop=True):
+        frame: str, image: str, out: str, res=0, crop=True):
     frame = f"{ASSET_PATH}/{frame}"
 
     try:
@@ -117,8 +117,16 @@ def build_from_preset(
         print(f"ERROR: Cannot Read Input Image {image}!")
         return
 
-    cfg = load_config(frame)["pos"]
-    outim = build_frame(input_image, frame_image, cfg, res, crop)
+    cfg = load_config(frame)
+
+    if res >= 0 and res < 360:
+        res = min(
+            frame_image.shape[0], frame_image.shape[1]) * cfg.get("defaultMultiplier", 1)
+    if res < 0:
+        res = min(
+            frame_image.shape[0], frame_image.shape[1]) * -res
+
+    outim = build_frame(input_image, frame_image, cfg["pos"], res, crop)
     try:
         cv2.imwrite(out, outim)
     except:
@@ -128,7 +136,7 @@ def build_from_preset(
 def list_frames() -> str:
     import os
     items = list(filter(lambda x: not x.endswith(
-        ".json"), os.listdir(ASSET_PATH)))
+        ".json") and not x.startswith("."), os.listdir(ASSET_PATH)))
 
     text = f"There are {len(items)} frames available.\n"
 

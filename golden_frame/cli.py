@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import typer
+from typing_extensions import Annotated
+
 from golden_frame.lib import build_from_preset, list_frames
 
 app = typer.Typer()
@@ -10,8 +12,8 @@ app = typer.Typer()
 def build(
     frame_name: str,
     input: str,
-    output: str = "output.png",
-    res: int = 720,
+    output: Annotated[str, typer.Option("--output", "-o")] = "output.png",
+    res: int = 0,
     crop: bool = True
 ):
     """
@@ -21,7 +23,7 @@ def build(
         frame_name (str): Name of Template Frame
         input (str): Location of your Image
         output (str, optional): Output Location. Defaults to "output.png".
-        res (int, optional): Minimum size of image. Defaults to 720.
+        res (int, optional): Minimum size of image, negative value is treated as multiplier to frame size. Defaults to 0 (auto).
         crop (bool, optional): Crop image instead of stretching. Defaults to True.
     """
     build_from_preset(frame_name, input, output, res, crop)
