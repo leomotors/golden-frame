@@ -72,6 +72,10 @@ def get_health():
     return "OK", 200
 
 
+ALLOWED_FILE_TYPES = set(
+    ["image/jpeg", "image/png", "image/webp", "image/avif"])
+
+
 @app.route("/", methods=["POST"])
 def handle_post():
     if PASSWORD is None or len(PASSWORD) < 6:
@@ -90,6 +94,10 @@ def handle_post():
 
     if not file or file.filename == "":
         return "No file selected", 400
+
+    filetype = file.content_type
+    if filetype not in ALLOWED_FILE_TYPES:
+        return "Invalid file type", 400
 
     # * Get frame name
     frame_name = request.form.get("frame_name")
@@ -130,7 +138,7 @@ def handle_post():
     input_image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
     if input_image is None:
-        return "Not an image", 400
+        return "Unable to parse input image", 400
 
     # Run the command
     out_image = build_golden_frame(frame_name, input_image, res_int, crop)
