@@ -43,7 +43,7 @@ Note that this is temporary and can be overwrite when installing new version.
 
 `file_name.json` Schema
 
-```json
+```jsonc
 {
   "name": "Golden Frame ทพจร",
   "pos": [

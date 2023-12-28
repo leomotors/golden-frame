@@ -1,5 +1,7 @@
 # pylint: disable=no-member
 
+from waitress import serve
+from flask import Flask, request, Response
 from datetime import datetime
 import io
 import os
@@ -7,10 +9,11 @@ import os
 import cv2
 import numpy as np
 
-from golden_frame.lib import build_frame, list_frames, ASSET_PATH, load_config
+import os
+os.environ["USELOCAL"] = "1"
 
-from flask import Flask, request, Response
-from waitress import serve
+if True:
+    from lib import ASSET_PATH, build_frame, get_target_resolution, list_frames,  load_config
 
 app = Flask(__name__)
 
@@ -20,14 +23,18 @@ if PASSWORD is None or len(PASSWORD) < 6:
     raise Exception("PASSWORD environment variable is not set or too weak!")
 
 
-def build_golden_frame(frame_name: str, input_image: np.ndarray, crop: bool):
+def build_golden_frame(frame_name: str, input_image: np.ndarray, res: int, crop: bool):
     frame_path = os.path.join(ASSET_PATH, frame_name)
     frame_image = cv2.imread(frame_path)
+    cfg = load_config(frame_path)
+
+    target_resolution = get_target_resolution(res, cfg, frame_image)
 
     out_image = build_frame(
         source_image=input_image,
         frame_image=frame_image,
-        frame_marks=load_config(frame_name)["pos"],
+        frame_marks=load_config(frame_path)["pos"],
+        target_resolution=target_resolution,
         crop=crop,
     )
 
@@ -60,32 +67,57 @@ def get_frames():
     return list_frame_json(), 200
 
 
+@app.route("/health", methods=["GET"])
+def get_health():
+    return "OK", 200
+
+
 @app.route("/", methods=["POST"])
 def handle_post():
     if PASSWORD is None or len(PASSWORD) < 6:
         return "Internal Server Error (Magic)", 500
 
+    # * Get password and confirm access
     password = request.headers.get("Authorization")
     if password != PASSWORD:
         return "Unauthorized", 401
 
-    if 'file' not in request.files:
-        return 'No file uploaded', 400
+    # * Get files
+    if "file" not in request.files:
+        return "No file uploaded", 400
 
-    file = request.files['file']
+    file = request.files["file"]
 
-    if not file or file.filename == '':
-        return 'No file selected', 400
+    if not file or file.filename == "":
+        return "No file selected", 400
 
-    frame_name = request.form.get('frame_name')
+    # * Get frame name
+    frame_name = request.form.get("frame_name")
 
     if frame_name is None:
-        return 'No frame name selected', 400
+        return "No frame name selected", 400
 
-    if not any(map(lambda x: x['name'] == frame_name, list_frame_json())):
-        return 'Invalid frame name', 400
+    if not any(map(lambda x: x["name"] == frame_name, list_frame_json())):
+        return "Invalid frame name", 400
 
-    nocrop = request.form.get('nocrop')
+    # * Get resolution option
+    resolution = request.form.get("resolution") or 0
+    try:
+        res_int = int(resolution)
+    except ValueError:
+        return "Invalid resolution", 400
+
+    if res_int < -5:
+        return "Resolution multipler too big, must not exceed x5", 400
+
+    if 0 < res_int < 360:
+        return "Resolution too small, must be at least 360", 400
+
+    if res_int > 4000:
+        return "Resolution too big, must not exceed 4000", 400
+
+    # * Get No Crop options
+    nocrop = request.form.get("nocrop")
     crop = nocrop is None or len(nocrop) < 1
 
     # Read the image file as bytes
@@ -98,21 +130,21 @@ def handle_post():
     input_image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
     if input_image is None:
-        return 'Not an image', 400
+        return "Not an image", 400
 
     # Run the command
-    out_image = build_golden_frame(frame_name, input_image, crop)
+    out_image = build_golden_frame(frame_name, input_image, res_int, crop)
 
     # Create a response stream
     response_stream = io.BytesIO()
 
-    ret, encoded_img = cv2.imencode('.png', out_image)
+    ret, encoded_img = cv2.imencode(".png", out_image)
     response_stream.write(encoded_img.tobytes())
 
     # Set the appropriate headers for the response
     headers = {
-        'Content-Disposition': f'attachment; filename=${file.filename}.out.png',
-        'Content-Type': 'image/png'
+        "Content-Disposition": f"attachment; filename=${file.filename}.out.png",
+        "Content-Type": "image/png"
     }
 
     # Return the response with the image stream
@@ -126,6 +158,9 @@ def getIP():
 
 @app.after_request
 def log_response(response):
+    if request.path == "/health" and request.headers.get("Authorization") == PASSWORD:
+        return response
+
     now = datetime.now()
     print(f"[{now.strftime('%d/%m/%Y %H:%M:%S')}] {getIP()} -> {request.method} {request.path} {response.status_code}")
     return response

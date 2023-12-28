@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import os
-os.environ["DEV"] = "1"
+os.environ["USELOCAL"] = "1"
 
 if True:
     from golden_frame.lib import build_from_preset

@@ -10,7 +10,7 @@ from pkg_resources import get_distribution, DistributionNotFound
 
 ASSET_PATH = "golden_frame/assets"
 
-if os.getenv("DEV") is None:
+if os.getenv("USELOCAL") is None:
     try:
         location = get_distribution("golden-frame").location
         ASSET_PATH = os.path.join(location, "golden_frame/assets")
@@ -45,7 +45,6 @@ def build_frame(
     target_resolution=720,
     crop=True,
 ) -> np.ndarray:
-
     if crop:
         ratio = calc_aspect_ratio(frame_marks)
         source_image = crop_to_ratio(source_image, ratio)
@@ -95,6 +94,17 @@ def build_frame(
     return result
 
 
+def get_target_resolution(res: int, config: Dict, frame_image: np.ndarray) -> int:
+    if res >= 0 and res < 360:
+        res = min(
+            frame_image.shape[0], frame_image.shape[1]) * config.get("defaultMultiplier", 1)
+    if res < 0:
+        res = min(
+            frame_image.shape[0], frame_image.shape[1]) * -res
+
+    return res
+
+
 def build_from_preset(
         frame: str, image: str, out: str, res=0, crop=True):
     frame = f"{ASSET_PATH}/{frame}"
@@ -119,12 +129,7 @@ def build_from_preset(
 
     cfg = load_config(frame)
 
-    if res >= 0 and res < 360:
-        res = min(
-            frame_image.shape[0], frame_image.shape[1]) * cfg.get("defaultMultiplier", 1)
-    if res < 0:
-        res = min(
-            frame_image.shape[0], frame_image.shape[1]) * -res
+    res = get_target_resolution(res, cfg, frame_image)
 
     outim = build_frame(input_image, frame_image, cfg["pos"], res, crop)
     try:
