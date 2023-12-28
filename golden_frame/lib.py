@@ -54,8 +54,10 @@ def build_frame(
     #   - Scale to match height
     #   - Calculate change of x point and y point to shift position mark on frame
     og_height, og_width = frame_image.shape[0:2]
+    target_frame_dim = (og_width * res // og_height,
+                        res) if og_width > og_height else (res, og_height * res // og_width)
     frame_image = cv2.resize(
-        frame_image, (frame_image.shape[1]*res//frame_image.shape[0], res))
+        frame_image, target_frame_dim)
 
     # Calculate change of x point and y point to shift position mark on frame
     for mark in frame_marks:

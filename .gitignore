@@ -128,5 +128,10 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# MacOS
+.DS_Store
+__MACOSX/
+
+# Temporary Test Files
 input.png
 output.png
