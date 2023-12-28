@@ -33,6 +33,12 @@ def list():
     print(list_frames())
 
 
+@app.command()
+def version():
+    from importlib.metadata import version
+    print(version("golden_frame"))
+
+
 def main():
     app()
 

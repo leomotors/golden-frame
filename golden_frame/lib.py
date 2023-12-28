@@ -6,10 +6,16 @@ import cv2
 import numpy as np
 
 
-ASSET_PATH = os.path.join("golden_frame", "assets")
+from pkg_resources import get_distribution, DistributionNotFound
 
-if os.environ.get("DEBUG") is not None:
-    ASSET_PATH = "./golden_frame/assets"
+ASSET_PATH = "golden_frame/assets"
+
+if os.getenv("DEV") is None:
+    try:
+        location = get_distribution("golden-frame").location
+        ASSET_PATH = os.path.join(location, "golden_frame/assets")
+    except DistributionNotFound:
+        pass
 
 
 def crop_to_ratio(source_image: np.ndarray, ratio: float) -> np.ndarray:
@@ -126,7 +132,7 @@ def list_frames() -> str:
 
     for item in items:
         cfg = load_config(f"{ASSET_PATH}/{item}")
-        text += f"\n{item} : {cfg['name']} ({calc_aspect_ratio(cfg['pos']):.3f}:1)"
+        text += f"\n{item} ({calc_aspect_ratio(cfg['pos']):.3f}:1) : {cfg['name']}"
 
     return text
 

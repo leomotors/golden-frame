@@ -20,15 +20,6 @@ if PASSWORD is None or len(PASSWORD) < 6:
     raise Exception("PASSWORD environment variable is not set or too weak!")
 
 
-def line_to_json(line: str):
-    tokens = line.split(":")
-
-    return {
-        "name": tokens[0].strip(),
-        "description": tokens[1].strip()
-    }
-
-
 def build_golden_frame(frame_name: str, input_image: np.ndarray, crop: bool):
     frame_path = os.path.join(ASSET_PATH, frame_name)
     frame_image = cv2.imread(frame_path)
@@ -41,6 +32,19 @@ def build_golden_frame(frame_name: str, input_image: np.ndarray, crop: bool):
     )
 
     return out_image
+
+
+def line_to_json(line: str):
+    tokens = line.split(":")
+    name = ":".join(tokens[:2]).strip()
+    name_tokens = name.split(" ")
+    description = tokens[2].strip()
+
+    return {
+        "name": name_tokens[0].strip(),
+        "description": description,
+        "ratio": float(name_tokens[1].strip()[1:].split(":")[0])
+    }
 
 
 def list_frame_json():
