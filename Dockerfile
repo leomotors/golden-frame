@@ -24,4 +24,4 @@ RUN poetry config virtualenvs.create false && poetry install
 
 # Set entry point (adjust accordingly)
 EXPOSE 3131
-CMD ["poetry", "run", "python", "-u", "app.py"]
+CMD ["poetry", "run", "python", "-u", "golden_frame/server.py"]

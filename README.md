@@ -5,23 +5,27 @@
 
 "กรอบทอง Generator"
 
-## Example
+## Examples
 
 <img src="https://github.com/Leomotors/golden-frame/raw/main/golden_frame/assets/golden_frame.png" width=200 /> **+**
 <img src="https://github.com/Leomotors/golden-frame/raw/main/example/MasterIceZ.jpg" width = 200 /> **=**
 <img src="https://github.com/Leomotors/golden-frame/raw/main/example/New-MasterIceZ.png" width=200 />
 
-PS. The original picture of golden frame is K-Pop Star (Search: กรอบทอง ทรงพระเจริญ in Google, there are many variant)
+<img src="https://github.com/Leomotors/golden-frame/raw/main/golden_frame/assets/wessuwan.png" width=200 /> **+**
+<img src="https://github.com/Leomotors/golden-frame/raw/main/example/honami-stella.jpg" width = 200 /> **=**
+<img src="https://github.com/Leomotors/golden-frame/raw/main/example/honami-wessuwan.png" width=200 />
 
-### Command for Above Example
+### Command for Above Examples
 
 ```bash
 golden-frame build golden_frame.png example/MasterIceZ.jpg --output=example/New-MasterIceZ.png
+
+golden-frame build wessuwan.png example/honami-stella.jpg --output=example/honami-wessuwan.png
 ```
 
 ### Other commands
 
-Use `golden-frame --help`
+Use `golden-frame --help` or `golden-frame build help`
 
 ## Adding Images
 
@@ -30,11 +34,12 @@ Currently, to add images, add them directly in assets folder.
 You can get its location with this command
 
 ```python
-import pkg_resources
-pkg_resources.resource_filename("golden_frame", "assets")
+from pkg_resources import get_distribution
+location = get_distribution("golden-frame").location
+ASSET_PATH = os.path.join(location, "golden_frame/assets")
 ```
 
-Note that this is temporary can be overwrite when installing new version.
+Note that this is temporary and can be overwrite when installing new version.
 
 `file_name.json` Schema
 
@@ -46,7 +51,9 @@ Note that this is temporary can be overwrite when installing new version.
     [620, 122],
     [620, 844],
     [112, 844]
-  ]
+  ],
+  // Optional, for image scaling to ensure good quality
+  "defaultMultiplier": 2
 }
 ```
 
