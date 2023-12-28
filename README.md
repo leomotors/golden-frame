@@ -34,9 +34,11 @@ Currently, to add images, add them directly in assets folder.
 You can get its location with this command
 
 ```python
+import os
 from pkg_resources import get_distribution
 location = get_distribution("golden-frame").location
 ASSET_PATH = os.path.join(location, "golden_frame/assets")
+print(ASSET_PATH)
 ```
 
 Note that this is temporary and can be overwrite when installing new version.
