@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "golden-frame"
-version = "2.0.69"
+version = "2.1.70"
 description = "Golden Frame \"กรอบทอง\" Generator, Create Golden Frame for given images (Also supports other frame, included with selected quality frames)"
 authors = [
   "Nutthapat Pongtanyavichai <59821765+Leomotors@users.noreply.github.com>",

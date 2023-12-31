@@ -2,6 +2,10 @@
 
 All notables change for Cocoa Discord Utils will be noted here
 
+## [2.1.70] - 2023-12-31
+
+- feat!: update list_frames to return dataclass to make it extensible
+
 ## [2.0.69] - 2023-12-28
 
 - feat: perspective transformation by @WasinUddy
