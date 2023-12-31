@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Dict, List
 import json
 import os
@@ -138,20 +139,6 @@ def build_from_preset(
         print(f"Error writing Image!")
 
 
-def list_frames() -> str:
-    import os
-    items = list(filter(lambda x: not x.endswith(
-        ".json") and not x.startswith("."), os.listdir(ASSET_PATH)))
-
-    text = f"There are {len(items)} frames available.\n"
-
-    for item in items:
-        cfg = load_config(f"{ASSET_PATH}/{item}")
-        text += f"\n{item} ({calc_aspect_ratio(cfg['pos']):.3f}:1) : {cfg['name']}"
-
-    return text
-
-
 def calc_aspect_ratio(pos: List[List[int]]) -> float:
     # From Copilot
 
@@ -160,6 +147,42 @@ def calc_aspect_ratio(pos: List[List[int]]) -> float:
             np.array(pos[0]) - np.array(pos[3]))  # type: ignore
 
 
+@dataclass
+class FrameInfo:
+    name: str
+    description: str
+    ratio: float
+    default_multiplier: int = 1
+
+
 def load_config(name: str) -> Dict:
     with open(".".join(name.split(".")[:-1]) + ".json") as f:
         return json.load(f)
+
+
+def import_frame(path: str) -> FrameInfo:
+    cfg = load_config(path)
+    return FrameInfo(
+        path.split("/")[-1],
+        cfg["name"],
+        calc_aspect_ratio(cfg['pos']),
+        cfg.get('defaultMultiplier', None)
+    )
+
+
+def list_frames() -> List[FrameInfo]:
+    items = list(filter(lambda x: not x.endswith(
+        ".json") and not x.startswith("."), os.listdir(ASSET_PATH)))
+
+    return list(map(lambda item: import_frame(f"{ASSET_PATH}/{item}"), items))
+
+
+def list_frames_str() -> str:
+    items = list_frames()
+
+    text = f"There are {len(items)} frames available.\n"
+
+    for item in items:
+        text += f"\n{item.name} ({item.ratio:.3f}:1, {item.default_multiplier or 1}x) : {item.description}"
+
+    return text

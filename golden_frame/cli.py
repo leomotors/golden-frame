@@ -3,7 +3,7 @@
 import typer
 from typing_extensions import Annotated
 
-from golden_frame.lib import build_from_preset, list_frames
+from golden_frame.lib import build_from_preset, list_frames_str
 
 app = typer.Typer()
 
@@ -32,7 +32,7 @@ def build(
 @app.command()
 def list():
     """Print List of Available Frames"""
-    print(list_frames())
+    print(list_frames_str())
 
 
 @app.command()
