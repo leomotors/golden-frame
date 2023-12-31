@@ -9,7 +9,7 @@ license = "MIT"
 readme = "README.md"
 repository = "https://github.com/leomotors/golden-frame"
 keywords = ["meme", "meme-generator"]
-exclude = ["golden_frame/server.py", "golden_frame/test_all_frame.py"]
+exclude = ["golden_frame/test_all_frame.py"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -19,8 +19,6 @@ typer = "^0.9.0"
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "^2.0.4"
-waitress = "^2.1.2"
-flask = "^3.0.0"
 
 [build-system]
 requires = ["poetry-core"]

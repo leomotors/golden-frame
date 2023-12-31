@@ -62,20 +62,9 @@ Note that this is temporary and can be overwrite when installing new version.
 Position is from Top-Left rotate clockwise.  
 Reminder that x goes from left to right and y from top to bottom
 
-## Docker Image
+## Live Demo
 
-Docker image of golden frame server, a server with 3 endpoints
-
-- GET / : Get all frames
-- POST / : Generate golden frame
-- GET /health : Return "OK"
-
-```
-docker pull ghcr.io/leomotors/golden-frame-server:latest
-```
-
-Ports: 3131
-Environment Variables: `PASSWORD`
+Available at (Coming Soon)
 
 ## Coming Soon { flex: true }
 
