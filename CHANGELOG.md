@@ -2,6 +2,12 @@
 
 All notables change for Cocoa Discord Utils will be noted here
 
+## [2.1.71] - 2024-01-01
+
+- changed orz.jpg for safety concern
+- updated vladdy_daddy.jpg default multiplier for good default quality
+- new frame! schizo.jpg
+
 ## [2.1.70] - 2023-12-31
 
 - feat!: update list_frames to return dataclass to make it extensible
