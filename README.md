@@ -64,7 +64,7 @@ Reminder that x goes from left to right and y from top to bottom
 
 ## Live Demo
 
-Available at (Coming Soon)
+https://golden-frame.leomotors.me (Repo: https://github.com/leomotors/golden-frame-web)
 
 ## Coming Soon { flex: true }
 
