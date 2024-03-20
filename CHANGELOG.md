@@ -2,6 +2,10 @@
 
 All notables change for Cocoa Discord Utils will be noted here
 
+## [2.1.74] - 2024-03-20
+
+- fix: update soldier_meme.jpg default multiplier
+
 ## [2.1.73] - 2024-03-20
 
 - new frame: soldier_meme.jpg
