@@ -2,6 +2,10 @@
 
 All notables change for Cocoa Discord Utils will be noted here
 
+## [2.1.72] - 2024-03-20
+
+- new frame: soldier_meme.jpg
+
 ## [2.1.71] - 2024-01-01
 
 - changed orz.jpg for safety concern
